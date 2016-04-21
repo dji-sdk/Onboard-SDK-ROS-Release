@@ -1,0 +1,12 @@
+Source: ros-indigo-dji-sdk-demo
+Section: misc
+Priority: extra
+Maintainer: Norman Li <norman.li@dji.com>
+Build-Depends: debhelper (>= 9.0.0), ros-indigo-catkin, ros-indigo-dji-sdk, ros-indigo-roscpp
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-indigo-dji-sdk-demo
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-dji-sdk, ros-indigo-roscpp
+Description: The dji_sdk_demo package
