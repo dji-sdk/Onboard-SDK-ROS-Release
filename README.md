@@ -4,11 +4,9 @@
 
 **Attention: **
 
-The default drone type in the code is M100 with NCore controller, you can catkin_make directly if you're using M100.
+You can change your drone type between M100 and M600/A3 in the launch file directly, no matter whether you download the code from this repo or apt-get from ROS official repository.
 
-If you're using A3/M600 instead of M100, please uncomment the `#define SDK_VERSION_3_1_A3` and comment the `#define SDK_VERSION_3_1_M100` in file `DJI_Config.h` with path `dji_sdk_lib/include/dji_sdk_lib` and catkin_make.
-
-![](dji_sdk_doc/m100_a3.png)
+Please refer to [our launch file](dji_sdk/launch/sdk_manifold.launch) for more detail.
 
 ##Introduction
 
@@ -42,6 +40,7 @@ It helps users handle the following commands and actions.
 ##How to use
 1. Install and configure your hardware correctly.
 2. Enter the following info into `dji_sdk/launch/sdk_manifold.launch`.
+	* Drone Version ("M100" or "A3")
 	* APP ID
 	* Communication Key
 	* Uart Device Name
@@ -103,6 +102,7 @@ The below environment has been tested.
 
 1. 按照文档配置好 M100 
 2. 将激活信息输入至launch file：`dji_sdk/launch/sdk_manifold.launch`
+	* Drone Version （飞控版本：“M100” 或 “A3”）
 	* APP ID （在官网注册key后得到）
 	* Communication Key（在官网注册key后得到）
 	* Uart Device Name（串口设备名称）
