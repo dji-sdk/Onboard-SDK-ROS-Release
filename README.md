@@ -1,171 +1,130 @@
-# DJI SDK DJI2MAV 0.2.1
-##### A package for connecting onboard computer with ground control station using mavlink protocal
+#DJI Onboard SDK ROS Packages
+
+----
+
+**Attention: **
+
+You can change your drone type between M100 and M600/A3 in the launch file directly, no matter whether you download the code from this repo or apt-get from ROS official repository.
+
+Please refer to [our launch file](dji_sdk/launch/sdk_manifold.launch) for more detail.
+
+##Introduction
+
+This is a ROS package for DJI OnBoard SDK.
+
+It helps users handle the following commands and actions.
+
+* The activation
+* The flight control obtainment
+* The flight control release
+* The take off procedure
+* The landing procedure
+* The go home procedure
+* The Gimbal control
+* The attitude control
+* The photo taking procedure
+* The start/stop video recording procedure
+* The Virtual RC control
+* The broadcast frequency control
+* The arm/disarm control
+* The timestamp synchonization procedure
+* The native waypoint task implementation
+* The hotpoint task implementation
+* The follow-me task implementation
+* Local navigation (fly into a certain (X,Y,Z))
+* GPS navigation (fly into a certain GPS coordinate)
+* Naive waypoint navigation (fly through a series of GPS coordinates)
+* Using WebSocket together with Baidu Map for navigation 
+* Using MAVLink protocol and QGroundStation
+
+##How to use
+1. Install and configure your hardware correctly.
+2. Enter the following info into `dji_sdk/launch/sdk_manifold.launch`.
+	* Drone Version ("M100" or "A3")
+	* APP ID
+	* Communication Key
+	* Uart Device Name
+	* Baudrate
+3. Use `roslaunch dji_sdk sdk_manifold.launch` to start the core node.
+4. Include the `dji_drone.h` from `dji_sdk/include/dji_sdk` into your package and run it. (there also provides a python version `dji_drone.py` in `dji_sdk/src/dji_sdk`)
+
+
+##System Structure
+* [dji_sdk](dji_sdk): the core package handling the communication with Matrice 100, which provides a header file `dji_drone.h` for future use
+* [dji_sdk_demo](dji_sdk_demo): an example package of using `dji_drone.h` to control the Matrice 100
+* [dji_sdk_web_groundstation](dji_sdk_web_groundstation): a WebSocket example using ROS-bridge-suite, where a webpage groundstatino is provided
+* [dji_sdk_read_cam](dji_sdk_read_cam): a X3 video decoding package for Manifold, CATKIN_IGNOREd by defualt
+* [dji_sdk_dji2mav](dji_sdk_dji2mav): a protocol converter making M100 compatiable with all MAVLink-protocol-dependent softwares
+* [dji_sdk_doc](dji_sdk_doc): all documents
+
+![image](dji_sdk_doc/structure.jpg)
+[click to see fullsize image](https://raw.githubusercontent.com/dji-sdk/Onboard-SDK-ROS/2.3/dji_sdk_doc/structure.jpg)
+
+##Read First
+[DJI SDK Challenge: Onboard SDK Part I](dji_sdk_doc/whatToKnowI.md)
+
+##System Environment
+The below environment has been tested.
+* Operating System: Ubuntu 14.04, Manifold
+* ROS version: ROS Indigo
 
 ---
-Version: 0.2.1
 
-Author: Chris Liu
+#DJI Onboard SDK ROS例程
 
-Updated Date: 2015/11/30
+##简介
 
----
+此ROS例程实现了以下功能：
 
+* 激活 Matrice100 （以下简称M100）
+* 获取 M100 控制权
+* 释放 M100 控制权
+* 向 M100 发送起飞指令
+* 向 M100 发送降落指令
+* 向 M100 发送返航指令
+* 对 M100 进行姿态控制
+* 对 M100 进行云台角度控制
+* 向 M100 发送相机控制指令
+* 向 M100 发送虚拟遥控指令
+* 向 M100 发送锁定/解锁指令
+* 向 M100 发送同步时间戳指令
+* 设置 M100 外发数据频率
+* 利用航点任务接口实现航点任务
+* 利用热点任务接口实现热点任务
+* 利用跟随任务接口实现跟随任务
+* 控制 M100 进行 (x,y,z) 坐标导航
+* 控制 M100 进行 GPS 坐标导航
+* 通过姿态控制指令实现 M100 的航点飞行任务
+* 通过 WebSocket 向 M100 发送网页地图生成的航点指令
+* 通过 MAVLink 和 QGroundControl 控制 M100
 
-## Introduction
-This package is designed as a library and can be included in various platforms. It is implemented in C++ and depended on mavlink library. A simple ROS node is provided to bringup the dji2mav package.
+##如何使用
 
-Dji2mav connects the onboard computer with ground control station using UDP. And it is required to call functions to send heartbeat and sensors data. All the mavlink status and message encode/decode will be handled inside the dji2mav package. So far it is tested on Ubuntu 14.0 with ROS indigo.
+1. 按照文档配置好 M100 
+2. 将激活信息输入至launch file：`dji_sdk/launch/sdk_manifold.launch`
+	* Drone Version （飞控版本：“M100” 或 “A3”）
+	* APP ID （在官网注册key后得到）
+	* Communication Key（在官网注册key后得到）
+	* Uart Device Name（串口设备名称）
+	* Baudrate（比特率）
+3. 运行 `roslaunch dji_sdk sdk_manifold.launch` 来启动核心包。
+4. 将 `dji_sdk/include/dji_sdk` 下的客户端头文件`dji_drone.h` 引用到你自己的 ROS 包中，并运行它（我们也提供了python版本的客户端`dji_drone.py`）
 
+##系统架构
+* [dji_sdk](dji_sdk): 核心 ROS 包，处理所有与 M100 的串口通信并提供了 `dji_drone.h`的头文件供开发者引用。
+* [dji_sdk_demo](dji_sdk_demo): 一个调用 `dji_drone.h` 控制 M100 的例子。
+* [dji_sdk_web_groundstation](dji_sdk_web_groundstation): 基于 WebSocket 的网页版地面站，依赖 ROS-bridge-suite 。
+* [dji_sdk_read_cam](dji_sdk_read_cam): Manifold专用 ROS 包，对禅思 X3 云台的视频信息进行解码输出视频流。默认通过`CATKIN_IGNORE`禁用，需要手动启用。
+* [dji_sdk_dji2mav](dji_sdk_dji2mav): MAVLink 协议转接器，使得 M100 可以支持任意使用 MAVLink 为协议的地面站软件。
+* [dji_sdk_doc](dji_sdk_doc): 所有的文档与图片信息。
 
-## Quick Start
-Since a ROS node is provided inside this package, it is easy to put the dji2mav to use.
+![image](dji_sdk_doc/structure.jpg)
+[点击查看大图](https://raw.githubusercontent.com/dji-sdk/Onboard-SDK-ROS/2.3/dji_sdk_doc/structure.jpg)
 
-#### 1. Start Simulator
-It is recommanded to do sufficient tests on simulator first.
-Please turn on your drone, connect your drone to the PC and properly set the *API Control* to *Enable* on N1-Assistant. Remember to switch to "P" mode on RC. Then open DJISimulator, click *Start Simulation* and *Display simulator*. You should see M100 on the ground in simulator.
+##Read First
+[DJI SDK Challenge: Onboard SDK Part I](dji_sdk_doc/whatToKnowI.md)
 
-#### 2. Connection
-Connect onboard computer with your ground control station. Any ground control station using mavlink protocol is fitted. Please do sufficient tests on simulator before a real flight. We will be appreciated if you put forward any bug.
-
-Make sure the onboard computer and ground control station are in the same LAN and can successfully ping each other.
-
-#### 3. Launch
-Firstly, fire up dji sdk main launch:
-```
-roslaunch dji_sdk sdk_manifold.launch
-```
-Record the IP and port of ground control station, modified the corresponding param in *dji2mav_bringup.launch*.
-Then run:
-```
-roslaunch dji_sdk_dji2mav dji2mav_bringup.launch
-```
-In the terminal that launched sdk_manifold, you should see the log information that the drone has been successfully activated and the control of the drone has got, as the picture shows below.
-
-![Activation and Request Control](/dji_sdk_dji2mav/doc/img/activation_and_request_control.png?raw=true)
-
-In the terminal that launched dji2mav_bringup, you should see it notifies that the connection to specific IP and port succeeds and all the modules is launched, as the picture shows below.
-
-![Bringup Dji2mav](/dji_sdk_dji2mav/doc/img/bringup_dji2mav.png?raw=true)
-
-If the output of these ROS nodes prompt that every thing goes okay, please move to next step.
-
-#### 4. Setup Ground Control Station
-Now please turn on your mavlink-protocol-adapted ground control station. Let's take QGround Control v2.7.1 for win32 as an example. Before clicking *Connect*, please check the connection settings. The *Link Type* should be UDP, and the *Listening Port* should be consistent with the port number that is set on the launch file which is mentioned on step 2. A UDP setting example is shown below.
-
-![UDP Settings](/dji_sdk_dji2mav/doc/img/udp_settings.png?raw=true)
-
-Then click *Connect*. If everything is ready, you can see your ground control station receives the heartbeat. On *Analyze* tag some sensors data from the vehicle are also displayed.
-
-Now you can do some simple waypoint test on simulator. 
-
-#### 5. Waypoint Test
-Before test waypoint module, please unlock the drone and takeoff using RC. On *Plan* tag inside QGround Station, you should see a marker on the map to show the current position of drone(You can set the initial location in DJISimulator).
-
-Double click on the map to lay markers of the waypoint. On the dashboard, please set the type of waypoint to *Global/Abs. Alt*(global position with absolute altitude). And choose *NAV: Waypoint* to be the navigation type.
-
-Check *lat*, *lon* and *alt* data of every waypoint. Be careful that there is a default value of *alt*. Make sure it is what you expect. You can also set desired yaw angle and stay time for every waypoint. An example of creating waypoint task is shown below.
-
-![Create Waypoint Task](/dji_sdk_dji2mav/doc/img/create_waypoint_task.png?raw=true)
-
-After the confirmation of the waypoint data in dashboard, you should click *Set* to send the whole mission to onboard computer. And a downloading process will be automatically execute after the uploading. You should double check the waypoint data which are downloaded from onboard device. A double check is necessary because there is no "Stop" buttom on the QGround Station. Repeated uploading process is allowed and a newer mission will cover the old one.
-
-To start the mission, click the first ckeck box of the waypoint list. This action will send a "set current target" command to the onboard computer. The vehicle will start from the current target to the end of the waypoint list. The picture shown below displays the results of downloading waypoint task from onboard computer. The "set current target" check box is on the right of every point.
-
-![Set Current Target](/dji_sdk_dji2mav/doc/img/set_current_target.png?raw=true)
-
-
-## Functional Specification
-In waypoint function module, users can set latitude, longitude, altitude, heading and staytime for the waypoint. Users can upload waypoint list to the vehicle. The vehicle will wait till a current target is set by the users in the ground control station. After that, the vehicle will directly go to that target waypoint and automatically carry out the rest of the waypoint list mission, as the picture shown below.
-
-![Auto Execution](/dji_sdk_dji2mav/doc/img/auto_execution.png?raw=true)
-
-
-## Code Architecture
-The dji2mav is designed to meet multi ground control stations and easy expansibility demands. Some classes are designed as lazy-mode singleton.
-
-![dji2mav architecture](/dji_sdk_dji2mav/doc/img/arch.png?raw=true)
-
-#### 1. Setup
-It is easy to access dji2mav interface by getting instance of Config. There are two important methods in config:
-```
-/**
- * @brief  Set the mavlink system id and the size of GCS list
- * @param  mavSysid : The system id of this vehicle
- * @param  num      : The number of Ground Control Stations
- * @return True if succeed or false if fail
- */
-bool setup(uint8_t mavSysid, uint16_t num);
-
-/**
- * @brief  Establish the connection of specific GCS
- * @param  gcsIdx         : The index of the GCS. Begin from 0
- * @param  gcsIP          : The IP of GCS
- * @param  gcsPort        : Connection port of GCS
- * @param  locPort        : Localhost port
- * @param  senderListSize : Default 256
- * @param  sendBufSize    : Default 1024
- * @param  recvBufSize    : Default 4096
- * @return True if succeed or false if fail
- */
-bool start(uint16_t gcsIdx, std::string gcsIP, 
-        uint16_t gcsPort, uint16_t locPort, 
-        uint16_t senderListSize = DEFAULT_SENDER_LIST_SIZE, 
-        uint16_t sendBufSize = DEFAULT_SEND_BUF_SIZE, 
-        uint16_t recvBufSize = DEFAULT_RECV_BUF_SIZE);
-```
-These two methods must be called **BEFORE** any data transporting between ground control station and onboard computer. They can be called like this:
-```
-/* Set the ID of system "1". There is only one ground control system so the number of GCS is also "1" */
-dji2mav::Config::getInstance()->setup(1, 1);
-/* The index of first GCS is "0". Set the first GCS IP and port */
-dji2mav::Config::getInstance()->start(0, targetIp1, (uint16_t)targetPort1, (uint16_t)srcPort);
-```
-
-#### 2. Send Heartbeat
-To send heartbeat to all GCS(ground control station), use:
-```
-dji2mav::MavHeartbeat::getInstance()->sendHeartbeat();
-```
-To send heartbeat to specific GCS, use the corresponding GCS index:
-```
-dji2mav::MavHeartbeat::getInstance()->sendHeartbeat(gcsIdx);
-```
-The send buffer of heartbeat module is particular. So it is safe to be called in a thread that periodically send heartbeat and it is recommanded to do so.
-
-#### 3. Update Sensors Data
-The sending process of sensors data is similar to the heartbeat module. To update the data, please use setters. All the data are stored inside the relative sensor class.
-
-Take ROS platform as an example. Since all the sensors data are published to specific topics, we can update data in the callback function:
-```
-void locPosCB(const dji_sdk::LocalPosition &msg) {
-    dji2mav::MavSensors::getInstance()->setLocalPosition(&msg.ts, &msg.x, 
-            &msg.y, &msg.z);
-}
-
-void velCB(const dji_sdk::Velocity &msg) {
-    dji2mav::MavSensors::getInstance()->setVelocity(&msg.ts, &msg.vx, 
-            &msg.vy, &msg.vz);
-}
-
-void attCB(const dji_sdk::AttitudeQuaternion &msg) {
-    dji2mav::MavSensors::getInstance()->setAttitudeQuaternion(&msg.ts, 
-            &msg.q0, &msg.q1, &msg.q2, &msg.q3, &msg.wx, &msg.wy, &msg.wz);
-}
-
-void gloPosCB(const dji_sdk::GlobalPosition &msg) {
-    dji2mav::MavSensors::getInstance()->setGlobalPosition(&msg.ts, 
-            &msg.latitude, &msg.longitude, &msg.altitude, &msg.height);
-}
-```
-
-#### 4. Run Waypoint Module
-Once waypoint module has been launched, it is ready to receive command from ground control station and reply automatically. All you need to do is keeping the distribution process running(an example of ROS platform):
-```
-while( ros::ok() ) {
-    dji2mav::MavDistributor::getInstance()->distribute();
-    ros::Duration(0.1).sleep();
-    ros::spinOnce(); // callback function spin
-}
-```
-
-
+#系统环境
+此 ROS 包在如下系统中进行测试；
+* 操作系统：Ubuntu 14.04， DJI Manifold
+* ROS 版本：ROS Indigo
